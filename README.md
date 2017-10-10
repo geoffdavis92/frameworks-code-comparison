@@ -838,7 +838,7 @@ export class ReactiveFormComponent implements OnInit {
 
 #### Mounting
 
-[`constructor(props)](https://reactjs.org/docs/react-component.html#constructor) - the first method called in the lifecycle before mounting. If used, it must include super(props) as first call:
+[`constructor(props)`](https://reactjs.org/docs/react-component.html#constructor) - the first method called in the lifecycle before mounting. If used, it must include super(props) as first call:
 
 ```js
 constructor(props) {
