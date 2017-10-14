@@ -35,6 +35,7 @@ All examples follow the current best practices and conventions inside the given 
   * [Forms](#forms)
   * [Handling Events](#handling-events)
   * [Lifecycle methods](#lifecycle-methods)
+  * [Conditional rendering](#conditional-rendering)
   * [Lists](#lists)
   * [Child nodes](#child-nodes)
   * [Transclusion and Containment](#transclusion-and-containment)
@@ -120,6 +121,7 @@ export class ChangePasswordComponent {
 ```
 
 Every component has to be declared inside a module, in order to be used within this module's other components.
+
 ```ts
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -136,7 +138,7 @@ export class ChangePasswordModule {}
 
 ### React
 
-```js
+```jsx
 import Logger from 'utils/logger'
 import Notification from 'utils/notification'
 import Auth from 'actions/auth'
@@ -162,6 +164,7 @@ class ChangePassword {
 ```
 
 ### Vue.js
+
 ```js
 import Vue from 'vue';
 import Logger from 'utils/logger';
@@ -381,6 +384,7 @@ There are three kinds of possible attributes being passed:
 ```
 
 ### React
+
 Templates in React are written inside the JavaScript file using the [JSX language](https://reactjs.org/docs/jsx-in-depth.html). This allows us to utilize the full JavaScript capabilities. JSX uses the uppercase vs. lowercase convention to distinguish between the user-defined components and DOM tags.
 
 ```jsx
@@ -415,7 +419,8 @@ Events can be listened to using `v-on` combined with the event name, and a metho
 # Interpolation
 
 ### AngularJS
-Interpolation is the process of data-binding values on the AngularJS `scope` to values in the html. You can read more on the [official documentation](https://docs.angularjs.org/guide/interpolation):
+
+Interpolation is the process of data-binding values on the AngularJS `scope` to values in the HTML. You can read more on the [official documentation](https://docs.angularjs.org/guide/interpolation):
 
 Let's say we have a value `heroImageUrl` on our scope that is defined as `superman.jpg`. (We use `ng-src` here instead of the regular `src` attribute so that Angular can set it up. If you just you source, the browser will try to load the image before Angular has a chance to interpolate.)
 
@@ -433,7 +438,7 @@ will render to
 
 You can interpolate more complicated values within the curly braces. For example, `{{ getVal() }}` will interpolate to the return value of the function `getVal`.
 
-Another way to "bind" data in is use `ng-bind`.
+Another way to "bind" data is to use `ng-bind`.
 
 ```html
 <label>Enter name: <input type="text" ng-model="name"></label><br>
@@ -442,6 +447,7 @@ Hello <span ng-bind="name"></span>!
 In this example, whatever is typed into the input will be placed on the `name` variable on the scope. The `ng-bind` will cause the content of the span to be updated to be the value of `name`. whenever the input changed. See the full example [here](https://docs.angularjs.org/api/ng/directive/ngBind).
 
 ### Angular
+
 Angular is similar to AngularJS. You can read more on the [official documentation](https://angular.io/guide/template-syntax#interpolation----).
 
 `{{color}}` Will still interpolate to `red`.
@@ -463,6 +469,7 @@ However, when setting an element property to a non-string data value, you must u
 
 
 ### React
+
 Unlike Angular, React uses single curly braces. It does not support variable interpolation inside an attribute value, but anything in the curly braces is just javascript.
 
 For example (taken from [here](https://stackoverflow.com/questions/21668025/react-jsx-access-props-in-quotes))
@@ -521,12 +528,12 @@ angular.module('app', [])
 
 In Angular filters are called [pipes](https://angular.io/guide/pipes). Built-in pipes available in Angular are: DatePipe, UpperCasePipe, LowerCasePipe, CurrencyPipe, and PercentPipe.
 
-Apart from built in, you can create your own, custom pipes.
+Apart from built-in, you can create your own, custom pipes.
 
 Create custom pipe:
 This pipe transforms given URL to safe style URL, so it can be used in hyperlinks, <img src> or <iframe src>, etc..
 
-```js
+```ts
 import { Pipe, PipeTransform } from '@angular/core';
 import { DomSanitizer} from '@angular/platform-browser';
 
@@ -554,7 +561,7 @@ Note `[src]` above is an input to the component where aboves `iframe` 'lives'.
 
 React doesn't provide any specific filters mechanism. This can simply be achieved by using ordinary JavaScript functions.
 
-```js
+```jsx
 export function reverse(input = '', uppercase = false) {
     const out = input.split('').reverse().join('');
 
@@ -591,7 +598,7 @@ Vue.js provides filters to allow for simple text formatting. The filter utilizes
 Filters are usable within mustache interpolations.
 
 ```html
-<h1>{{ name | lowercase }}</h1> 
+<h1>{{ name | lowercase }}</h1>
 ```
 
 Filters can also be used within the `v-bind` directive.
@@ -600,7 +607,7 @@ Filters can also be used within the `v-bind` directive.
 <div v-bind:slug="slug | formatSlug"></div>
 ```
 
-When creating filters, the function always receives the expression's value. 
+When creating filters, the function always receives the expression's value.
 
 ```js
 new Vue({
@@ -627,7 +634,7 @@ Filters can be created locally like the above example and only be available with
 
 ```js
 Vue.filter('lowercase', word => word.toLowerCase());
-``` 
+```
 
 For global filters to work, they should be declared before the Vue instance.
 
@@ -689,7 +696,7 @@ export default module.component('app-settings', component);
 
 Angular introduced a new pattern for Component interactions, this pattern follows the [Flux](https://facebook.github.io/flux/) architecture. Read more on [the official documentation](https://angular.io/guide/component-interaction).
 
-```js
+```ts
 @Component({
   selector: 'user-preview',
   template: `
@@ -713,7 +720,7 @@ export class UserPreviewComponent {
 
 In a parent component, ie `SettingsComponent`:
 
-```js
+```ts
 @Component({
   selector: 'app-settings',
   template: `
@@ -759,7 +766,7 @@ UserPreviewComponent.propTypes = {
 
 In a parent component, ie `SettingsComponent`:
 
-```js
+```jsx
 import React from 'react';
 
 class SettingsComponent extends React.Component {
@@ -788,45 +795,152 @@ For communication between two components that don't have a parent-child relation
 
 # Forms
 
-### Angular
-
-Angular offers two ways to build form: [reactive form](https://angular.io/guide/reactive-forms) and template-driven form. The former, demoed below, allows us to listen to form or control changes.
+### AngularJS
 
 ```js
+class SignInController {
+    constructor(Auth) {
+        'ngInject';
+
+        this.Auth = Auth;
+    }
+
+    $onInit() {
+        this.email = '';
+        this.password = '';
+    }
+
+    submit() {
+        Auth.signIn(this.email, this.password);
+    }
+}
+
+```
+
+```html
+<form name="$ctrl.form">
+    <label>
+        Email:
+        <input type="text" ng-model="$ctrl.email" />
+    </label>
+
+    <label>
+        E-mail:
+        <input type="email" ng-model="$ctrl.password" />
+    </label>
+
+    <input type="submit" ng-click="$ctrl.submit()" value="Save" />
+</form>
+```
+
+### Angular
+
+Angular offers two ways to build forms: 
+
+* [Reactive forms](https://angular.io/guide/reactive-forms)
+* [Template-driven forms](https://angular.io/guide/forms#template-driven-forms). 
+
+The former use a reactive (or model-driven) approach to build forms. The latter allow to build forms by writing templates in the Angular template syntax with the form-specific directives and techniques.
+
+#### Reactive forms example
+
+```ts
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormBuilder } from '@angular/forms';
+
 @Component({
   selector: 'reactive-form',
   template: `
     <div>
-    <form [formGroup]="form" (ngSubmit)="onSubmit(form.value, form.valid)" novalidate>
-      <div>
-        <label>Name:</label>
-        <input type="text" formControlName="name">
-      </div>
-      <div>
-        <label>Email:</label>
-        <input type="text" formControlName="email">
-      </div>
-    </form>
-    <div>Form details: <pre>form value: <br>{{form.value | json}}</pre></div>
+        <form [formGroup]="form" 
+              (ngSubmit)="onSubmit(form.value, form.valid)" 
+              novalidate>
+        <div>
+            <label>
+                Name:
+                <input type="text" formControlName="name">
+            </label>
+        </div>
+        <div>
+            <label>
+                Email:
+                <input type="email" formControlName="email">
+            </label>
+        </div>
+        </form>
+    </div>
   `
 })
 
 export class ReactiveFormComponent implements OnInit {
   public form: FormGroup;
+
   constructor(private formBuilder: FormBuilder) { }
+
   ngOnInit() {
     this.form = this.formBuilder.group({name: [''], email: ['']});
   }
 }
 ```
 
+The `novalidate` attribute in the `<form>` element prevents the browser from attempting native HTML validations
+
+### React
+
+Two techniques exists in React to handle form data i.e [Controlled Components](https://reactjs.org/docs/forms.html#controlled-components) and [Uncontrolled Components](https://reactjs.org/docs/uncontrolled-components.html). A controlled component keeps the input's value in the state and updates it via `setState()`. While in an uncontrolled component, form data is handled by DOM itself and referenced via `ref`. In most cases, it is recommended to use controlled components. 
+
+```js
+import React from 'react';
+
+export default class ReactForm extends React.Component{
+  this.state = {
+    email: '',
+    password:'',
+  }
+
+  handleChange = ({ name, value}) => {
+    if (name === 'email') {
+      this.setState({ email: value })
+    } else if (name === 'password') {
+      this.setState({ password: value })
+    }
+  }
+
+  render() {
+    return (
+      <form>
+        <label>
+          Email:
+          <input
+            name="email"
+            type="email"
+            value= {this.state.email }
+            onChange={ this.handleChange }
+          />
+        </label>
+        <label>
+          Password:
+          <input
+            name="password"
+            type="password"
+            value={ this.state.password }
+            onChange={ this.handleChange }
+          />
+        </label>
+      </form>
+    )
+  }
+}
+```
+
+:arrow_right: https://reactjs.org/docs/forms.html
+
+
 ## Validation
 
-## model-options
+## Data-binding
 
-## submit
+## Submitting
 
 # Handling Events
 
@@ -840,7 +954,7 @@ export class ReactiveFormComponent implements OnInit {
 
 [`constructor(props)`](https://reactjs.org/docs/react-component.html#constructor) - the first method called in the lifecycle before mounting. If used, it must include super(props) as first call:
 
-```js
+```jsx
 constructor(props) {
   super(props);
   this.state = {
@@ -871,9 +985,251 @@ constructor(props) {
 
 [`componentDidCatch(error,info)`](https://reactjs.org/blog/2017/07/26/error-handling-in-react-16.html) - is invoked when Javascript throws an error anywhere in the component's tree. Useful for catching errors, showing a fallback interface, and logging errors without breaking the entire application.
 
+### Vue.js
+
+#### beforeCreate
+
+Called synchronously immediately after the instance has been initialized, before data observation and event/watcher setup. On every vue instance lifecycle, `this` points to the vm instance itself.
+
+```javascript
+new Vue({
+  beforeCreate: function () {
+    console.log('this method called before instance created')
+  }
+})
+```
+
+#### created
+
+Called synchronously after the instance is created. At this stage, the instance has finished processing the options which means the following have been set up: data observation, computed properties, methods, watch/event callbacks. However, the mounting phase has not been started, and the $el property will not be available yet.
+
+```javascript
+new Vue({
+  created: function () {
+    console.log('this method called after instance created')
+  }
+})
+```
+
+#### beforeMount
+
+Called right before the mounting begins: the render function is about to be called for the first time.
+
+_This hook is not called during server-side rendering._
+
+```javascript
+new Vue({
+  beforeMount: function () {
+    console.log('this method called before mounting an instance')
+  }
+})
+```
+
+#### mounted
+
+Called after the instance has been mounted, where [el](https://vuejs.org/v2/api/#el) is replaced by the newly created `vm.$el`. If the root instance is mounted to an in-document element, vm.$el will also be in-document when `mounted` is called.
+
+Note that `mounted` does not guarantee that all child components have also been mounted. If you want to wait until the entire view has been rendered, you can use [vm.$nextTick](https://vuejs.org/v2/api/#Vue-nextTick) inside of mounted:
+
+```javascript
+new Vue({
+  mounted: function () {
+    this.$nextTick(function () {
+      // Code that will run only after the
+      // entire view has been rendered
+    })
+  }
+})
+```
+
+#### beforeUpdate
+
+Called when the data changes, before the virtual DOM is re-rendered and patched.
+
+You can perform further state changes in this hook and they will not trigger additional re-renders.
+
+_This hook is not called during server-side rendering._
+
+#### updated
+
+Called after a data change causes the virtual DOM to be re-rendered and patched.
+
+The component’s DOM will have been updated when this hook is called, so you can perform DOM-dependent operations here. However, in most cases you should avoid changing state inside the hook.
+
+Note that `updated` does not guarantee that all child components have also been re-rendered. If you want to wait until the entire view has been re-rendered, you can use [vm.$nextTick](https://vuejs.org/v2/api/#Vue-nextTick) inside of `updated`:
+
+```javascript
+updated: function () {
+  this.$nextTick(function () {
+    // Code that will run only after the
+    // entire view has been re-rendered
+  })
+}
+```
+
+#### activated
+
+Called when a kept-alive component is activated.
+
+_This hook is not called during server-side rendering._
+
+#### deactivated
+
+Called when a kept-alive component is deactivated.
+
+_This hook is not called during server-side rendering._
+
+#### beforeDestroy
+
+Called right before a Vue instance is destroyed. At this stage the instance is still fully functional.
+
+_This hook is not called during server-side rendering._
+
+#### destroyed
+
+Called after a Vue instance has been destroyed. When this hook is called, all directives of the Vue instance have been unbound, all event listeners have been removed, and all child Vue instances have also been destroyed.
+
+_This hook is not called during server-side rendering._
+
+# Conditional rendering
+
+### AngularJS
+
+Angularjs 1.x has three ways to perform conditional rendering: `ng-if`, `ng-switch` and `ng-hide/ng-show`. 
+ 
+```js
+export class RegistrationComponentCtrl {
+    this.registrationCompleted = false;
+    this.displaySpecialOffer = false;
+    this.displayStatus = 'Registered';
+}
+```
+```html
+    <div ng-if="displaySpecialOffer">
+      <special-offer></special-offer>
+    </div>
+
+    <div ng-switch="displayStatus">
+      <div ng-switch-when="Registered">
+         <registration-completed></registration-completed>
+      </div>
+    </div>
+
+    <div ng-show="displaySpecialOffer">
+        <special-offer></special-offer>
+    </div>  
+    <div ng-hide="displaySpecialOffer">
+        <special-offer></special-offer>
+    </div>  
+```
+
+### Angular
+
+Since Angular 4.0.0, alongside standard `ngIf`, it is possible to use `ngIf;else` or `ngIf;then;else` using `<ng-template>` with an alias `#aliasName`.
+
+
+```ts
+import { Component } from '@angular/core';
+
+@Component({
+  selector: 'registration',
+  template: `
+    <!-- ------------------- -->
+    <!-- use ngIf like this: -->
+    <!-- ------------------- -->
+    <div *ngIf="displaySpecialOffer">
+      <special-offer></special-offer>
+    </div>
+
+
+    <!-- ------------------------ -->
+    <!-- use ngIf;else like this: -->
+    <!-- ------------------------ -->
+    <div *ngIf="registrationCompleted;else registrationForm">
+      <registration-completed></registration-completed>
+    </div>
+
+    <ng-template #registrationForm>
+      <registration-form></registration-form>
+    </ng-template>
+
+
+    <!-- ------------------------------ -->
+    <!-- use ngIf;then;else like this:  -->
+    <!-- ------------------------------ -->
+    <div *ngIf="registrationCompleted;then registrationSucceeded;else registrationForm"></div>
+
+    <ng-template #registrationSucceeded>
+      <registration-completed></registration-completed>
+    </ng-template>
+
+    <ng-template #registrationForm>
+      <registration-form></registration-form>
+    </ng-template>
+  `,
+})
+export class registrationComponent {
+  registrationCompleted: boolean = false;
+}
+```
+
+### React
+
+The most common approach to conditional rendering is by using the ternary operator:  
+`{ condition ? <Component /> : null }`
+
+```jsx
+class Registration extends React.Component {
+  this.state = {
+    registrationCompleted: false,
+  };
+
+  propTypes = {
+    displaySpecialOffer: PropTypes.bool,
+  }
+
+  render() {
+    return (
+      <div>
+        { this.props.displaySpecialOffer ? <SpecialOffer /> : null }
+
+        { this.state.registrationCompleted ? (
+            <RegistrationCompleted />
+        ) : (
+            <RegistrationForm />
+        ) }
+      </div>
+    );
+  }
+}
+```
+
+### Vue.js
+
+Vue.js has three directives to perform conditional rendering: `v-if`, `v-else-if` and `v-else`.
+
+```html
+<template>
+  <section v-if="registrationCompleted && !displaySpecialOffer">
+    <registration-completed />
+  </section>
+  <section v-else-if="registrationCompleted && displaySpecialOffer">
+    <special-offer />
+    <registration-completed />
+  </section>
+  <section v-else>
+    <registration-form />
+  </section>
+</template>
+```
+
+:arrow_right: https://vuejs.org/v2/guide/conditional.html
+
+
 # Lists
 
 ### AngularJS
+
 [ngRepeat](https://docs.angularjs.org/api/ng/directive/ngRepeat)
 
 ```js
@@ -909,9 +1265,10 @@ export class BookListComponentCtrl {
 ```
 
 ### Angular
+
 [ngFor](https://angular.io/guide/template-syntax#ngfor)
 
-```js
+```ts
 export interface Book {
   id: number;
   title: string;
@@ -919,7 +1276,7 @@ export interface Book {
 }
 ```
 
-```js
+```ts
 import { Component } from '@angular/core';
 import { Book } from './book.interface';
 
@@ -959,9 +1316,10 @@ export class BookListComponent {
 ```
 
 ### React
+
 [Lists and Keys](https://reactjs.org/docs/lists-and-keys.html)
 
-```js
+```jsx
 class BookList extends React.Component {
   constructor() {
     this.state = {
@@ -1003,7 +1361,7 @@ class BookList extends React.Component {
 }
 ```
 
-### Vue.js 
+### Vue.js
 
 ```html
 <template>
@@ -1043,9 +1401,179 @@ export default {
 
 # Child nodes
 
-> TODO
-> ViewChild vs refs
-> ContentChild vs this.props.children
+### AngularJS
+
+Inside a [component](https://docs.angularjs.org/guide/component), we have access to the child node by injecting `$element` to the controller. It has [jqLite](https://docs.angularjs.org/api/ng/function/angular.element) wrapped instance of the DOM element. Also, accessing `$element[0]` will return the bare DOM element.
+
+Transclusion is also supported - using `ng-transclude` (See [Transclusion and Containment](#transclusion-and-containment) section).
+
+```js
+class TextInputController {
+  constructor($element) {
+    'ngInject';
+
+    this.$element = $element;
+  }
+
+  // The $element can be used after the link stage
+  $postLink() {
+    const input = this.$element.find('input');
+    input.on('change', console.log);
+  }
+}
+
+const component = {
+  controller: TextInputController,
+  template: `
+    <div>
+      <input type="text" />
+    </div>
+  `,
+};
+```
+
+### Angular
+
+Angular provides two ways to deal with child nodes: `ViewChild` and `ContentChild`. They both have the same purpose, but there are different use cases for them.
+
+* [`ViewChild`](https://angular.io/api/core/ViewChild) works with the **internal DOM of your component**, defined by you in the component's template. You have to use the `@ViewChild` decorator to get the DOM element reference.
+
+* [`ContentChild`](https://angular.io/api/core/ContentChild) works with de **DOM supplied to your component by its end-user** (See [Transclusion and Containment](#transclusion-and-containment)). You have to use the `@ContentChild` decorator to get the DOM element reference.
+
+```ts
+import {
+  Component,
+  Input,
+  ViewChild,
+  ContentChild,
+  AfterViewInit,
+  AfterContentInit
+} from '@angular/core';
+
+@Component({
+  selector: 'child',
+  template: `
+    <p>Hello, I'm your child #{{ number }}!</p>
+  `
+})
+export class Child {
+  @Input() number: number;
+}
+
+@Component({
+  selector: 'parent',
+  template: `
+    <child number="1"></child>
+    <ng-content></ng-content>
+  `
+})
+export class Parent implements AfterViewInit, AfterContentInit {
+  @ViewChild(Child) viewChild: Child;
+  @ContentChild(Child) contentChild: Child;
+
+  ngAfterViewInit() {
+    // ViewChild element is only avaliable when the
+    // ngAfterViewInit lifecycle hook is reached.
+    console.log(this.viewChild);
+  }
+
+  ngAfterContentInit() {
+    // ContentChild element is only avaliable when the
+    // ngAfterContentInit lifecycle hook is reached.
+    console.log(this.contentChild);
+  }
+}
+
+@Component({
+  selector: 'app',
+  template: `
+    <parent>
+      <child number="2"></child>
+      <child number="3"></child>
+    </parent>
+  `
+})
+export class AppComponent { }
+```
+
+`ViewChild` and `ContentChild` work with **only one** DOM element. You can use [`ViewChildren`](https://angular.io/api/core/ViewChildren) and [`ContentChildren`](https://angular.io/api/core/ContentChildren) in order to get **multiple elements**. Both return the elements wrapped in a [`QueryList`](https://angular.io/api/core/QueryList).
+
+### React
+
+In React, we have two options to deal with child nodes: [`refs`](https://reactjs.org/docs/refs-and-the-dom) and [`children`](https://reactjs.org/docs/jsx-in-depth.html#children-in-jsx). With `refs`, you have access to the real DOM element. The `children` property let you manipulate the underlying [React elements](https://reactjs.org/blog/2015/12/18/react-components-elements-and-instances.html).
+
+#### refs
+
+`ref` is a special attribute we can pass to a React element that receives a callback and call it with the corresponding DOM node.
+
+```jsx
+// In order to access child nodes from parents, we can pass the `ref` callback
+// to the children as props.
+const TextInput = ({ inputRef }) => (
+  <div>
+    <input ref={inputRef} type="text" />
+  </div>
+);
+
+class Parent extends React.Component {
+
+  componentDidMount() {
+    // Refs are only executed after mounting and unmounting. Now `this.textInput`
+    // references a real DOM node. So, we can use the raw DOM API
+    // (to focus the input, for example)
+    this.textInput.focus();
+  }
+
+  render() {
+    // The child's `inputRef` prop receives the `ref` callback.
+    // We can use the callback to store the DOM element in an instance variable.
+    return (
+      <div>
+        <label>This is my child: </label>
+        <TextInput
+          inputRef={node => { this.textInput = node; }} />
+      </div>
+    )
+  }
+}
+
+```
+
+#### children
+
+`children` is a special prop avaliable in all React component instances. You can use it to control _how_ and _where_ the underlying React elements will be rendered.
+
+```jsx
+// children is just a prop. In this case, the value of `children` will be
+// what you pass to the <Heading /> component as a child node.
+const Heading = ({ children }) => (
+  <h1 className="Heading">
+    {children}
+  </h1>
+);
+
+// `this.props.children` refers to whatever is a valid node inside the <Layout /> element.
+class Layout extends React.Component {
+  render() {
+    return (
+      <div class="Layout">
+        {this.props.children}
+      </div>
+    );
+  }
+}
+
+const App = () => (
+  <div>
+    <Heading>I am the child!</Heading>
+    <Layout>
+      We are
+      {'the'}
+      <strong>Children!</strong>
+    </Layout>
+  </div>
+);
+```
 
 # Transclusion and Containment
 
@@ -1081,7 +1609,7 @@ angular.module('app.layout', [])
 
 ### Angular
 
-```js
+```ts
 @Component({
   selector: 'layout',
   template: `
@@ -1206,13 +1734,148 @@ const Content = () => (
 
 # Styling
 
-> TODO
+### AngularJS
+
+Generally you will use some preprocessor (e.g. [Sass](http://sass-lang.com/)) and assign appropriate classes to the elements.
+
+The [`ng-style`](https://docs.angularjs.org/api/ng/directive/ngStyle) directive allows you to set custom CSS styles dynamically.
+
+```js
+class HeaderController {
+    constructor(ThemeProvider) {
+        'ngInject';
+
+        this.ThemeProvider = ThemeProvider;
+        this.headerStyles = {};
+    }
+
+    $onInit() {
+        this.headerStyles.color = ThemeProvider.getTextPrimaryColor();
+    }
+}
+```
+
+```html
+<h1 ng-style="$ctrl.headerStyles"
+    class="Header">
+    Welcome
+</h1>
+```
+
+### Angular
+
+When defining Angular component you may also include the CSS styles that will go with the template. By default the styles will be compiled as shadow DOM, which basically means you don't need any namespacing strategy for CSS classes.
+
+The [`ngStyle`](https://angular.io/api/common/NgStyle) directive allows you to set custom CSS styles dynamically.
+
+```ts
+@Component({
+  selector: 'ng-header',
+  template: require('./header.html'),
+  styles: [require('./header.scss')],
+})
+export class HeaderComponent {
+    headerStyles = {};
+
+    constructor(private themeProvider: ThemeProvider) {}
+
+    ngOnInit() {
+        this.headerStyles.color = ThemeProvider.getTextPrimaryColor();
+    }
+}
+```
+
+```html
+<h1 [ngStyle]="headerStyles"
+    class="Header">
+    Welcome
+</h1>
+```
+
+```scss
+.Header {
+    font-weight: normal;
+}
+```
+
+:arrow_right: https://angular.io/guide/component-styles
+
+### React
+
+In React community there are many approaches to styling your app. From traditional preprocessors (like in the Angular world) to so-called [CSS in JS](https://github.com/MicheleBertoli/css-in-js). The most popular include:
+
+* [css-modules](https://github.com/gajus/react-css-modules)
+* [styled-components](https://github.com/styled-components/styled-components)
+* [aphrodite](https://github.com/Khan/aphrodite)
+
+To dynamically apply styles you can directly pass an object to the [style](https://reactjs.org/docs/dom-elements.html#style) attribute.
+
+```jsx
+export class HeaderComponent {
+    state = {
+        color: null,
+    };
+
+    componentDidMount() {
+        this.setState({
+            color: ThemeProvider.getTextPrimaryColor();
+        })
+    }
+
+    render() {
+        return (
+            <h1 styles={ { color: this.state.color } }>
+                Welcome
+            </h1>
+        )
+    }
+}
+```
+
+### Vue.js
+
+When using [Single File Components](https://vuejs.org/v2/guide/single-file-components.html) you can simply style a component inside the `<style>` tag. When the tag has the `scoped` attribute, its CSS will apply to elements of the current component only.
+
+To bind styles dynamically you can use the [`v-bind:style`](https://vuejs.org/v2/guide/class-and-style.html#Binding-Inline-Styles) directive.
+
+```html
+<template>
+    <h1 class="Header"
+        v-bind:style="headerStyles">
+        Welcome
+    </h1>
+</template>
+
+<script>
+const ThemeProvider = require('./utils/themeProvider');
+
+module.exports = {
+  data() {
+    return {
+        headerStyles: {
+            color: null,
+        }
+    };
+  },
+  created() {
+    this.headerStyles.color = ThemeProvider.getTextPrimaryColor();
+  },
+};
+</script>
+
+<style scoped>
+  .Header {
+    font-weight: normal
+  }
+</style>
+```
 
 # Inject HTML template
 
 aka. innerHTML
 
 ### AngularJS
+
 By default, the HTML content will be sanitized using the [$sanitize](https://docs.angularjs.org/api/ngSanitize/service/$sanitize) service. To utilize this functionality, you need to include `ngSanitize` in your module's dependencies. [Read more](https://docs.angularjs.org/api/ng/directive/ngBindHtml)
 
 ```html
@@ -1220,6 +1883,7 @@ By default, the HTML content will be sanitized using the [$sanitize](https://doc
 ```
 
 ### Angular
+
 It automatically sanitizes the values before displaying them using [DomSanitizer](https://angular.io/docs/ts/latest/api/platform-browser/index/DomSanitizer-class.html)
 
 ```html
@@ -1227,9 +1891,18 @@ It automatically sanitizes the values before displaying them using [DomSanitizer
 ```
 
 ### React
+
 All string values are sanitized before being inserted into the DOM. No more details are currently available.
 You need to pass an object containing `__html` property with desired template content.
 
 ```jsx
 <p dangerouslySetInnerHTML={{__html: article.content}} />
+```
+
+### Vue.js
+
+The content passed to [`v-html`](https://vuejs.org/v2/guide/syntax.html#Raw-HTML) is not being [sanitized](https://github.com/vuejs/vue/issues/6333). You have to use an external library, e.g. [sanitize-html](https://www.npmjs.com/package/sanitize-html)
+
+```html
+<div v-html="article.content"></div>
 ```
